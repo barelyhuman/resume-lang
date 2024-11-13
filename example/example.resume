@@ -1,0 +1,35 @@
+section Basic
+    label "":"Siddharth Gelera"
+    label "E-Mail": url ahoy@barelyhuman.dev "mailto:ahoy@barelyhuman.dev"
+    label "Website": url https://reaper.is
+endsection
+
+section Experience
+    section NearForm
+        section Senior Software Developer
+            label "Start Date": 2024-01-29
+        endsection
+    endsection
+
+    section Fountane
+        section Principal Software Developer
+            label "Start Date": 2024-01-29
+            label "End Date": 2024-01-29
+        endsection
+        
+        section Senior Software Developer
+            label "Start Date": 2024-01-29
+            label "End Date": 2024-01-29
+        endsection
+    endsection
+endsection
+
+
+section Education
+    heading Some College
+    label Score:4.5
+endsection
+
+
+
+

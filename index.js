@@ -1,4 +1,8 @@
-const DEFAULT_TRANSFORMS = [nestedStringLiteralTransform, urlTransfrom];
+const DEFAULT_TRANSFORMS = [
+  nestedStringLiteralTransform,
+  dateTranform,
+  urlTransfrom,
+];
 
 const KEYWORDS = [
   "section",
@@ -78,9 +82,6 @@ function toAst(tokens) {
           collector.length = 0;
           break;
         }
-        case "url": {
-          break;
-        }
         case "label": {
           let labelId = "";
           while (traverse.next() != ":") {
@@ -103,12 +104,6 @@ function toAst(tokens) {
           astPointer.children.push(labelNode);
           break;
         }
-        case "text": {
-          break;
-        }
-        case "date": {
-          break;
-        }
       }
     } else {
       if (traverse.value().trim() === "") continue;
@@ -129,6 +124,16 @@ function runTransformers(literal) {
     }
     return tranform(acc);
   }, literal);
+}
+
+function dateTranform(code) {
+  const trimmedCode = code.trim();
+  if (!trimmedCode.startsWith("date")) {
+    return code;
+  }
+
+  const dateLiteral = trimmedCode.slice("date.length").trim()
+  return createNode("date", new Date(dateLiteral));
 }
 
 function urlTransfrom(code) {
@@ -169,10 +174,17 @@ function urlTransfrom(code) {
     const value = literals[1].trim();
     return createNode("url", {
       alias: alias,
-      value: value,
+      link: value,
+    });
+  } else if (literals.length == 1) {
+    const value = literals[0].trim();
+    return createNode("url", {
+      link: value,
     });
   }
+  return code;
 }
+
 function nestedStringLiteralTransform(code) {
   const trimmedCode = code.trim();
   if (!(trimmedCode.startsWith('"') && trimmedCode.endsWith('"'))) {
@@ -185,4 +197,3 @@ export function parse(code) {
   const ast = toAst(tokenizer(code));
   return ast;
 }
-

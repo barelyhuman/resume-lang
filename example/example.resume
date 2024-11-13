@@ -7,7 +7,7 @@ endsection
 section Experience
     section NearForm
         section Senior Software Developer
-            label "Start Date": 2024-01-29
+            label "Start Date": date 2024-01-29
         endsection
     endsection
 

@@ -1,5 +1,9 @@
-import fs from "node:fs";
-import { join } from "node:path";
+const join = (...paths) => {
+  if (paths.find((d) => d == null)) {
+    throw new Error("Paths cannot be `undefined`");
+  }
+  return paths.join("/");
+};
 
 const DEFAULT_TRANSFORMS = [
   nestedStringLiteralTransform,
@@ -63,83 +67,109 @@ function toAst(tokens, parseOptions) {
     type: "root",
     children: [],
   };
-  let astPointer = ast;
-  while (traverse.next()) {
-    const literal = collector.concat(traverse.value()).join("");
-    if (KEYWORDS.includes(literal)) {
-      switch (literal) {
-        case "section": {
-          let sectionId = "";
-          while (traverse.next() != "\n") {
-            sectionId += traverse.value();
+  try {
+    let astPointer = ast;
+    while (traverse.next()) {
+      const literal = collector.concat(traverse.value()).join("");
+      if (KEYWORDS.includes(literal)) {
+        switch (literal) {
+          case "section": {
+            let sectionId = "";
+            for (;;) {
+              traverse.next();
+              if (!traverse.value()) break;
+              if (traverse.value() === "\n") break;
+              sectionId += traverse.value();
+            }
+            const newNode = createNode("section", sectionId.trim(), astPointer);
+
+            (astPointer.children ||= []).push(newNode);
+
+            collector.length = 0;
+            astPointer = newNode;
+            break;
           }
-          const newNode = createNode("section", sectionId.trim(), astPointer);
+          case "@import": {
+            let importPath = "";
+            for (;;) {
+              traverse.next();
+              if (!traverse.value()) break;
+              if (traverse.value() === "\n") break;
+              importPath += traverse.value();
+            }
 
-          (astPointer.children ||= []).push(newNode);
+            if (!importPath.trim().startsWith('"')) {
+              throw new Error(
+                "`@imports` must be defined in single or double `\",'` quotes"
+              );
+            }
 
-          collector.length = 0;
-          astPointer = newNode;
-          break;
-        }
-        case "@import": {
-          let importPath = "";
-          for (;;) {
-            traverse.next();
-            if (!traverse.value()) break;
-            if (traverse.value() === "\n") break;
-            importPath += traverse.value();
-          }
+            const normalizeImportPath =
+              nestedStringLiteralTransform(importPath).replace(
+                /\.resume$/,
+                ""
+              ) + ".resume";
 
-          if (!importPath.trim().startsWith('"')) {
-            throw new Error(
-              "`@imports` must be defined in single or double `\",'` quotes"
+            const secondary = parseOptions.readFile(
+              join(parseOptions.rootDir, normalizeImportPath)
             );
+            const tree = parse(secondary, parseOptions);
+            astPointer.children.push(...tree.children);
+            break;
           }
+          case "end": {
+            astPointer = astPointer.parent;
+            collector.length = 0;
+            break;
+          }
+          case "label": {
+            let labelId = "";
+            for (;;) {
+              traverse.next();
+              if (!traverse.value()) break;
+              if (traverse.value() === ":") break;
+              labelId += traverse.value();
+            }
+            let labelValue = "";
+            for (;;) {
+              traverse.next();
+              if (!traverse.value()) break;
+              if (traverse.value() === "\n") break;
+              labelValue += traverse.value();
+            }
 
-          const normalizeImportPath =
-            nestedStringLiteralTransform(importPath).replace(/\.resume$/, "") +
-            ".resume";
-
-          const secondary = parseOptions.readFile(
-            join(parseOptions.rootDir, normalizeImportPath)
-          );
-          const tree = parse(secondary, parseOptions);
-          astPointer.children.push(...tree.children);
-          break;
-        }
-        case "end": {
-          astPointer = astPointer.parent;
-          collector.length = 0;
-          break;
-        }
-        case "label": {
-          let labelId = "";
-          while (traverse.next() != ":") {
-            labelId += traverse.value();
+            let transformedLabelValue = runTransformers(labelValue);
+            if (
+              typeof transformedLabelValue != "object" &&
+              typeof transformedLabelValue === "string"
+            ) {
+              transformedLabelValue = {
+                type: "text",
+                value: transformedLabelValue,
+              };
+            }
+            const labelNode = createNode(
+              "label",
+              {
+                id: runTransformers(labelId),
+                value: transformedLabelValue,
+              },
+              astPointer
+            );
+            collector.length = 0;
+            astPointer.children.push(labelNode);
+            break;
           }
-          let labelValue = "";
-          while (traverse.next() != "\n") {
-            labelValue += traverse.value();
-          }
-          const labelNode = createNode(
-            "label",
-            {
-              id: runTransformers(labelId),
-              value: runTransformers(labelValue),
-            },
-            astPointer
-          );
-          collector.length = 0;
-          astPointer.children.push(labelNode);
-          break;
         }
+      } else {
+        if (traverse.value().trim() === "") continue;
+        collector.push(traverse.value());
       }
-    } else {
-      if (traverse.value().trim() === "") continue;
-      collector.push(traverse.value());
     }
+    return ast;
+  } catch (err) {
+    return ast;
   }
-  return ast;
 }
 
 function runTransformers(literal) {
@@ -214,6 +244,7 @@ function urlTransfrom(code) {
   } else if (literals.length == 1) {
     const value = literals[0].trim();
     return createNode("url", {
+      alias: value,
       link: value,
     });
   }

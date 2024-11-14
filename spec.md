@@ -4,7 +4,7 @@
 
 ### Scope Based
 
-- `section <name> <body> endsection`
+- `section <name> <body> end`
 
 ### Modifiers
 

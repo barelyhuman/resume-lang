@@ -1,2 +1,7 @@
-node_modules 
+node_modules
 *.ast.json
+
+/example/www-dist
+
+.parcel-cache
+/dist

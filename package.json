@@ -1,16 +1,20 @@
 {
   "name": "resumelang",
   "version": "1.0.0",
-  "type":"module",
+  "type": "module",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "example:dev": "parcel example/www/index.html",
+    "example:build": "parcel build --dist-dir example/www-dist example/www/index.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "parcel": "^2.13.0"
+  },
+  "dependencies": {
+    "@vue/reactivity": "^3.5.12"
   }
 }

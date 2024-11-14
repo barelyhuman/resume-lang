@@ -56,7 +56,7 @@ function createNode(type, value, parent) {
   };
 }
 
-function toAst(tokens, rootDir) {
+function toAst(tokens, parseOptions) {
   const collector = [];
   const traverse = createTokenTraverser(tokens);
   let ast = {
@@ -100,11 +100,10 @@ function toAst(tokens, rootDir) {
             nestedStringLiteralTransform(importPath).replace(/\.resume$/, "") +
             ".resume";
 
-          const secondary = fs.readFileSync(
-            join(rootDir, normalizeImportPath),
-            "utf8"
+          const secondary = parseOptions.readFile(
+            join(parseOptions.rootDir, normalizeImportPath)
           );
-          const tree = parse(secondary);
+          const tree = parse(secondary, parseOptions);
           astPointer.children.push(...tree.children);
           break;
         }
@@ -229,7 +228,14 @@ function nestedStringLiteralTransform(code) {
   return trimmedCode.slice(1, -1);
 }
 
-export function parse(code, rootDir) {
-  const ast = toAst(tokenizer(code), rootDir);
+/**
+ * @param {string} code
+ * @param {object} options
+ * @param {string} options.rootDir
+ * @param {(path:string)=>string} options.readFile
+ * @returns
+ */
+export function parse(code, options) {
+  const ast = toAst(tokenizer(code), options);
   return ast;
 }

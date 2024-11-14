@@ -5,8 +5,12 @@ async function main() {
   try {
     const file = "./example/example.resume";
     const rootDir = "./example";
+    const ast = parse(await fs.promises.readFile(file, "utf8"), {
+      rootDir,
+      readFile: (path) => fs.readFileSync(path, "utf8"),
+    });
     const parsedAST = JSON.stringify(
-      parse(await fs.promises.readFile(file, "utf8"), rootDir),
+      ast,
       (k, v) => {
         if (k === "parent") {
           return undefined;

@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "example:dev": "parcel example/www/index.html",
-    "example:build": "parcel build --dist-dir example/www-dist example/www/index.html"
+    "example:build": "parcel build --dist-dir ./www-dist example/www/index.html"
   },
   "keywords": [],
   "author": "",

@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import { join } from "node:path";
+
 const DEFAULT_TRANSFORMS = [
   nestedStringLiteralTransform,
   dateTranform,
@@ -6,12 +9,13 @@ const DEFAULT_TRANSFORMS = [
 
 const KEYWORDS = [
   "section",
-  "endsection",
+  "end",
   "text",
   "endtext",
   "label",
   "url",
   "date",
+  "@import",
 ];
 
 function tokenizer(code) {
@@ -52,7 +56,7 @@ function createNode(type, value, parent) {
   };
 }
 
-function toAst(tokens) {
+function toAst(tokens, rootDir) {
   const collector = [];
   const traverse = createTokenTraverser(tokens);
   let ast = {
@@ -77,7 +81,34 @@ function toAst(tokens) {
           astPointer = newNode;
           break;
         }
-        case "endsection": {
+        case "@import": {
+          let importPath = "";
+          for (;;) {
+            traverse.next();
+            if (!traverse.value()) break;
+            if (traverse.value() === "\n") break;
+            importPath += traverse.value();
+          }
+
+          if (!importPath.trim().startsWith('"')) {
+            throw new Error(
+              "`@imports` must be defined in single or double `\",'` quotes"
+            );
+          }
+
+          const normalizeImportPath =
+            nestedStringLiteralTransform(importPath).replace(/\.resume$/, "") +
+            ".resume";
+
+          const secondary = fs.readFileSync(
+            join(rootDir, normalizeImportPath),
+            "utf8"
+          );
+          const tree = parse(secondary);
+          astPointer.children.push(...tree.children);
+          break;
+        }
+        case "end": {
           astPointer = astPointer.parent;
           collector.length = 0;
           break;
@@ -95,7 +126,6 @@ function toAst(tokens) {
             "label",
             {
               id: runTransformers(labelId),
-              // TODO: pass through modifiers
               value: runTransformers(labelValue),
             },
             astPointer
@@ -114,16 +144,14 @@ function toAst(tokens) {
 }
 
 function runTransformers(literal) {
-  return DEFAULT_TRANSFORMS.reduce((acc, tranform) => {
-    // TODO: move it out to a breakable for loop
-
-    // If one of the transformers created a node
-    // don't no anything
+  let acc = literal;
+  for (let tranform of DEFAULT_TRANSFORMS) {
     if (typeof acc === "object" && acc.type) {
       return acc;
     }
-    return tranform(acc);
-  }, literal);
+    acc = tranform(acc);
+  }
+  return acc;
 }
 
 function dateTranform(code) {
@@ -132,7 +160,7 @@ function dateTranform(code) {
     return code;
   }
 
-  const dateLiteral = trimmedCode.slice("date.length").trim()
+  const dateLiteral = trimmedCode.slice("date.length").trim();
   return createNode("date", new Date(dateLiteral));
 }
 
@@ -155,18 +183,26 @@ function urlTransfrom(code) {
         if (collector.length > 0) {
           literals.push(collector.join(""));
           collector.length = 0;
+          continue;
         }
       }
-    } else if (traverser.value() === '"') {
+    }
+
+    if (traverser.value() === '"') {
       if (collector.length > 0 && scopeDelim === '"') {
         literals.push(collector.join(""));
         collector.length = 0;
+        scopeDelim = "";
       } else {
         scopeDelim = '"';
       }
       continue;
     }
     collector.push(traverser.value());
+  }
+
+  if (collector.length > 0) {
+    literals.push(collector.join(""));
   }
 
   if (literals.length == 2) {
@@ -188,12 +224,12 @@ function urlTransfrom(code) {
 function nestedStringLiteralTransform(code) {
   const trimmedCode = code.trim();
   if (!(trimmedCode.startsWith('"') && trimmedCode.endsWith('"'))) {
-    return code;
+    return trimmedCode;
   }
   return trimmedCode.slice(1, -1);
 }
 
-export function parse(code) {
-  const ast = toAst(tokenizer(code));
+export function parse(code, rootDir) {
+  const ast = toAst(tokenizer(code), rootDir);
   return ast;
 }

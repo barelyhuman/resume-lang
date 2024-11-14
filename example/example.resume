@@ -2,6 +2,7 @@ section Basic
     label :"Siddharth Gelera"
     label E-Mail: url ahoy@barelyhuman.dev mailto:ahoy@barelyhuman.dev
     label Website: url https://reaper.is
+@import "./site-description"
 end
 
 @import "./experience"

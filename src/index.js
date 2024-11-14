@@ -1,3 +1,5 @@
+import { marked } from "marked";
+
 const join = (...paths) => {
   if (paths.find((d) => d == null)) {
     throw new Error("Paths cannot be `undefined`");
@@ -11,16 +13,7 @@ const DEFAULT_TRANSFORMS = [
   urlTransfrom,
 ];
 
-const KEYWORDS = [
-  "section",
-  "end",
-  "text",
-  "endtext",
-  "label",
-  "url",
-  "date",
-  "@import",
-];
+const KEYWORDS = ["section", "text", "end", "label", "url", "date", "@import"];
 
 function tokenizer(code) {
   const tokens = code.split("");
@@ -34,19 +27,19 @@ function createTokenTraverser(tokens) {
     value() {
       return this.tokens[this.pos];
     },
-    next() {
-      this.pos += 1;
+    next(count = 1) {
+      this.pos += count;
       return this.tokens[this.pos];
     },
-    prev() {
-      this.pos -= 1;
+    prev(count = 1) {
+      this.pos -= count;
       return this.tokens[this.pos];
     },
-    peekPrev() {
-      return this.tokens[this.pos - 1];
+    peekPrev(count = 1) {
+      return this.tokens[this.pos - count];
     },
-    peekNext() {
-      return this.tokens[this.pos + 1];
+    peekNext(count = 1) {
+      return this.tokens[this.pos + count];
     },
   };
 }
@@ -115,10 +108,72 @@ function toAst(tokens, parseOptions) {
             );
             const tree = parse(secondary, parseOptions);
             astPointer.children.push(...tree.children);
+            collector.length = 0;
             break;
           }
           case "end": {
             astPointer = astPointer.parent;
+            collector.length = 0;
+            break;
+          }
+          case "text": {
+            let textId = "";
+            for (;;) {
+              traverse.next();
+              if (!traverse.value()) break;
+              if (traverse.value() === ":") break;
+              textId += traverse.value();
+            }
+            let textValue = [];
+            let posBeforeParse = traverse.pos;
+            for (;;) {
+              traverse.next();
+              if (!traverse.value()) break;
+              textValue.push(traverse.value());
+            }
+
+            let lookingForEndAt;
+            outer: for (
+              lookingForEndAt = 0;
+              lookingForEndAt < textValue.length;
+              lookingForEndAt += 1
+            ) {
+              let currentPos = lookingForEndAt;
+              const token = textValue[lookingForEndAt];
+              if (token === "\n") {
+                let walker = [];
+                inner: for (;;) {
+                  currentPos += 1;
+                  walker.push(textValue[currentPos]);
+                  if (
+                    !textValue[currentPos] ||
+                    textValue[currentPos] === "\n"
+                  ) {
+                    if (walker.join("").trim() === "end") {
+                      lookingForEndAt += currentPos - lookingForEndAt;
+                      break outer;
+                    }
+                    break inner;
+                  }
+                }
+              }
+            }
+            // was already at `posBeforeParse`, then moved up till the nearest `end` which was
+            // found at lookingForEndAt, we need to move back just before the last `end`
+            traverse.pos = posBeforeParse + lookingForEndAt;
+            const asString = textValue
+              .slice(0, lookingForEndAt - "end".length)
+              .join("");
+
+            const node = createNode(
+              "rich-text",
+              {
+                original: asString.trim(),
+                transformed: marked(asString),
+              },
+              astPointer
+            );
+            astPointer.children.push(node);
             collector.length = 0;
             break;
           }

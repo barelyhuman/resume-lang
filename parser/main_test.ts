@@ -1,5 +1,5 @@
 import { assertSnapshot } from "@std/testing/snapshot"
-import { parse, type AST } from "./main.ts"
+import { type AST, parse } from "./main.ts"
 
 // removes the circular dep on the `parent`
 // nodes and creates a simpler Object

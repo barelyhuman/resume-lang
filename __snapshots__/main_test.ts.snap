@@ -1,0 +1,200 @@
+export const snapshot = {};
+
+snapshot[`parse isolated labels 1`] = `
+{
+  children: [
+    {
+      children: [],
+      type: "label",
+      value: {
+        id: "",
+        value: {
+          type: "text",
+          value: "Siddharth Gelera",
+        },
+      },
+    },
+    {
+      children: [],
+      type: "label",
+      value: {
+        id: "E-Mail",
+        value: {
+          children: [],
+          type: "url",
+          value: {
+            alias: "ahoy@barelyhuman.dev",
+            link: "mailto:ahoy@barelyhuman.dev",
+          },
+        },
+      },
+    },
+    {
+      children: [],
+      type: "label",
+      value: {
+        id: "Website",
+        value: {
+          children: [],
+          type: "url",
+          value: {
+            alias: "https://reaper.is",
+            link: "https://reaper.is",
+          },
+        },
+      },
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`parse basic section 1`] = `
+{
+  children: [
+    {
+      children: [
+        {
+          children: [],
+          type: "label",
+          value: {
+            id: "",
+            value: {
+              type: "text",
+              value: "Siddharth Gelera",
+            },
+          },
+        },
+        {
+          children: [],
+          type: "label",
+          value: {
+            id: "E-Mail",
+            value: {
+              children: [],
+              type: "url",
+              value: {
+                alias: "ahoy@barelyhuman.dev",
+                link: "mailto:ahoy@barelyhuman.dev",
+              },
+            },
+          },
+        },
+        {
+          children: [],
+          type: "label",
+          value: {
+            id: "Website",
+            value: {
+              children: [],
+              type: "url",
+              value: {
+                alias: "https://reaper.is",
+                link: "https://reaper.is",
+              },
+            },
+          },
+        },
+      ],
+      type: "section",
+      value: "Basic",
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`parse nested sections 1`] = `
+{
+  children: [
+    {
+      children: [
+        {
+          children: [
+            {
+              children: [],
+              type: "label",
+              value: {
+                id: "Grade",
+                value: {
+                  type: "text",
+                  value: "1",
+                },
+              },
+            },
+            {
+              children: [],
+              type: "label",
+              value: {
+                id: "BatchOf",
+                value: {
+                  type: "text",
+                  value: "2013",
+                },
+              },
+            },
+          ],
+          type: "section",
+          value: "College",
+        },
+      ],
+      type: "section",
+      value: "Education",
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`imports 1`] = `
+{
+  children: [
+    {
+      children: [
+        {
+          children: [
+            {
+              children: [],
+              type: "label",
+              value: {
+                id: "Grade",
+                value: {
+                  type: "text",
+                  value: "1",
+                },
+              },
+            },
+            {
+              children: [],
+              type: "label",
+              value: {
+                id: "BatchOf",
+                value: {
+                  type: "text",
+                  value: "2013",
+                },
+              },
+            },
+          ],
+          type: "section",
+          value: "College",
+        },
+      ],
+      type: "section",
+      value: "Education",
+    },
+    {
+      children: [],
+      type: "label",
+      value: {
+        id: "x",
+        value: {
+          type: "text",
+          value: "y",
+        },
+      },
+    },
+  ],
+  type: "root",
+}
+`;

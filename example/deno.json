@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "dev": "parcel www/index.html",
+    "build": "parcel build www/index.html"
+  },
+  "nodeModulesDir":"auto",
+  "imports": {
+    "@vue/reactivity": "npm:@vue/reactivity@^3.5.12",
+    "parcel": "npm:parcel@^2.13.0"
+  }
+}

@@ -1,10 +1,16 @@
 import { marked } from "marked";
 
-const join = (...paths) => {
+type ParserOptions = {
+  rootDir: string;
+  readFile: (p: string) => string;
+};
+
+const join = (...paths: string[]) => {
   if (paths.find((d) => d == null)) {
     throw new Error("Paths cannot be `undefined`");
   }
-  return paths.join("/");
+  return paths.join("/")
+  .replace(/(\.\/)+/g, "./");
 };
 
 const DEFAULT_TRANSFORMS = [
@@ -15,12 +21,12 @@ const DEFAULT_TRANSFORMS = [
 
 const KEYWORDS = ["section", "text", "end", "label", "url", "date", "@import"];
 
-function tokenizer(code) {
+function tokenizer(code: string) {
   const tokens = code.split("");
   return tokens;
 }
 
-function createTokenTraverser(tokens) {
+function createTokenTraverser(tokens: string[]) {
   return {
     tokens,
     pos: -1,
@@ -44,7 +50,7 @@ function createTokenTraverser(tokens) {
   };
 }
 
-function createNode(type, value, parent) {
+function createNode<T>(type: string, value: T, parent?: any) {
   return {
     type,
     value,
@@ -53,15 +59,15 @@ function createNode(type, value, parent) {
   };
 }
 
-function toAst(tokens, parseOptions) {
+function toAst(tokens: string[], parseOptions: ParserOptions) {
   const collector = [];
   const traverse = createTokenTraverser(tokens);
-  let ast = {
+  const ast = {
     type: "root",
     children: [],
   };
   try {
-    let astPointer = ast;
+    let astPointer: { parent?: any; children: any[] } = ast;
     while (traverse.next()) {
       const literal = collector.concat(traverse.value()).join("");
       if (KEYWORDS.includes(literal)) {
@@ -124,8 +130,8 @@ function toAst(tokens, parseOptions) {
               if (traverse.value() === ":") break;
               textId += traverse.value();
             }
-            let textValue = [];
-            let posBeforeParse = traverse.pos;
+            const textValue: string[] = [];
+            const posBeforeParse = traverse.pos;
             for (;;) {
               traverse.next();
               if (!traverse.value()) break;
@@ -141,7 +147,7 @@ function toAst(tokens, parseOptions) {
               let currentPos = lookingForEndAt;
               const token = textValue[lookingForEndAt];
               if (token === "\n") {
-                let walker = [];
+                const walker = [];
                 inner: for (;;) {
                   currentPos += 1;
                   walker.push(textValue[currentPos]);
@@ -222,33 +228,31 @@ function toAst(tokens, parseOptions) {
       }
     }
     return ast;
-  } catch (err) {
+  } catch (_err) {
     return ast;
   }
 }
 
-function runTransformers(literal) {
+function runTransformers(literal: string | Record<string, {}>) {
   let acc = literal;
-  for (let tranform of DEFAULT_TRANSFORMS) {
-    if (typeof acc === "object" && acc.type) {
-      return acc;
-    }
-    acc = tranform(acc);
+  for (const tranform of DEFAULT_TRANSFORMS) {
+    if (typeof acc === "object" && acc.type) return acc;
+    if (typeof acc === "string") acc = tranform(acc);
   }
   return acc;
 }
 
-function dateTranform(code) {
+function dateTranform(code: string) {
   const trimmedCode = code.trim();
   if (!trimmedCode.startsWith("date")) {
     return code;
   }
 
-  const dateLiteral = trimmedCode.slice("date.length").trim();
+  const dateLiteral = trimmedCode.slice("date".length).trim();
   return createNode("date", new Date(dateLiteral));
 }
 
-function urlTransfrom(code) {
+function urlTransfrom(code: string) {
   const trimmedCode = code.trim();
   if (!trimmedCode.startsWith("url")) {
     return code;
@@ -260,7 +264,7 @@ function urlTransfrom(code) {
     trimmedCode.slice("url".length).split("")
   );
 
-  let literals = [];
+  const literals = [];
   while (traverser.next()) {
     if (/\s+/.test(traverser.value())) {
       if (!scopeDelim) {
@@ -306,7 +310,7 @@ function urlTransfrom(code) {
   return code;
 }
 
-function nestedStringLiteralTransform(code) {
+function nestedStringLiteralTransform(code: string) {
   const trimmedCode = code.trim();
   if (!(trimmedCode.startsWith('"') && trimmedCode.endsWith('"'))) {
     return trimmedCode;
@@ -314,14 +318,7 @@ function nestedStringLiteralTransform(code) {
   return trimmedCode.slice(1, -1);
 }
 
-/**
- * @param {string} code
- * @param {object} options
- * @param {string} options.rootDir
- * @param {(path:string)=>string} options.readFile
- * @returns
- */
-export function parse(code, options) {
+export function parse(code: string, options: ParserOptions) {
   const ast = toAst(tokenizer(code), options);
   return ast;
 }

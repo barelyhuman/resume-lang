@@ -1,5 +1,5 @@
 import { computed, effect, reactive } from "@vue/reactivity";
-import { parse } from "../../src/index.js";
+import { parse } from "../../main.ts";
 
 const textElm = document.getElementById("code");
 const previewContainerElm = document.getElementById("preview");

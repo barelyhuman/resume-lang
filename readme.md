@@ -1,3 +1,5 @@
 > resume lang
 
-> [!NOTE] **STATUS**: Pre-ALPHA
+> [!NOTE]
+>
+> **STATUS**: Pre-ALPHA

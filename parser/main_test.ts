@@ -1,12 +1,12 @@
-import { assertSnapshot } from "@std/testing/snapshot";
-import { parse } from "./main.ts";
+import { assertSnapshot } from "@std/testing/snapshot"
+import { parse } from "./main.ts"
 
 // removes the circular dep on the `parent`
 // nodes and creates a simpler Object
 function toJSON(ast: any) {
   return JSON.parse(
-    JSON.stringify(ast, (k, v) => (k === "parent" ? undefined : v), 2)
-  );
+    JSON.stringify(ast, (k, v) => (k === "parent" ? undefined : v), 2),
+  )
 }
 
 Deno.test("parse isolated labels", async (t) => {
@@ -18,10 +18,10 @@ label Website: url https://reaper.is`,
     {
       rootDir: ".",
       readFile: (_path) => ``,
-    }
-  );
-  await assertSnapshot(t, toJSON(output));
-});
+    },
+  )
+  await assertSnapshot(t, toJSON(output))
+})
 
 Deno.test("parse basic section", async (t) => {
   const output = parse(
@@ -33,10 +33,10 @@ end`,
     {
       rootDir: ".",
       readFile: (_path) => ``,
-    }
-  );
-  await assertSnapshot(t, toJSON(output));
-});
+    },
+  )
+  await assertSnapshot(t, toJSON(output))
+})
 
 Deno.test("parse nested sections", async (t) => {
   const output = parse(
@@ -49,10 +49,10 @@ end`,
     {
       rootDir: ".",
       readFile: (_path) => ``,
-    }
-  );
-  await assertSnapshot(t, toJSON(output));
-});
+    },
+  )
+  await assertSnapshot(t, toJSON(output))
+})
 
 Deno.test("imports", async (t) => {
   const fileOne = `section Education
@@ -60,8 +60,8 @@ Deno.test("imports", async (t) => {
     label "Grade":"1"
     label "BatchOf":"2013"
   end
-end`;
-  const fileTwo = `label x:y`;
+end`
+  const fileTwo = `label x:y`
   const output = parse(
     `
 @import "./fileOne"
@@ -70,12 +70,12 @@ end`;
     {
       rootDir: ".",
       readFile: (path) => {
-        return path === "./fileOne.resume" ? fileOne : fileTwo;
+        return path === "./fileOne.resume" ? fileOne : fileTwo
       },
-    }
-  );
-  await assertSnapshot(t, toJSON(output));
-});
+    },
+  )
+  await assertSnapshot(t, toJSON(output))
+})
 
 Deno.test("rich-text", async (t) => {
   const output = parse(
@@ -90,12 +90,12 @@ end
     {
       rootDir: ".",
       readFile: (_path) => {
-        return ``;
+        return ``
       },
-    }
-  );
-  await assertSnapshot(t, toJSON(output));
-});
+    },
+  )
+  await assertSnapshot(t, toJSON(output))
+})
 
 Deno.test("rich-text conflicts", async (t) => {
   const output = parse(
@@ -122,9 +122,9 @@ end
     {
       rootDir: ".",
       readFile: (_path) => {
-        return ``;
+        return ``
       },
-    }
-  );
-  await assertSnapshot(t, toJSON(output));
-});
+    },
+  )
+  await assertSnapshot(t, toJSON(output))
+})

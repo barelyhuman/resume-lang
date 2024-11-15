@@ -1,11 +1,11 @@
 {
-  "name":"@barelyhuman/resume-lang-parser",
+  "name": "@barelyhuman/resume-lang-parser",
   "tasks": {
     "dev": "deno run --watch main.ts"
   },
-  "exports":"./main.ts",
+  "exports": "./main.ts",
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
-    "marked": "npm:marked@^15.0.0"    
+    "marked": "npm:marked@^15.0.0"
   }
 }

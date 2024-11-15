@@ -1,9 +1,9 @@
 import { assertSnapshot } from "@std/testing/snapshot"
-import { parse } from "./main.ts"
+import { parse, type AST } from "./main.ts"
 
 // removes the circular dep on the `parent`
 // nodes and creates a simpler Object
-function toJSON(ast: any) {
+function toJSON(ast: AST) {
   return JSON.parse(
     JSON.stringify(ast, (k, v) => (k === "parent" ? undefined : v), 2),
   )

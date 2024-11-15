@@ -198,3 +198,87 @@ snapshot[`imports 1`] = `
   type: "root",
 }
 `;
+
+snapshot[`rich-text 1`] = `
+{
+  children: [
+    {
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "Desc",
+        original: "# heading
+
+some *italics*, some **bold** and 
+- a list",
+        transformed: "<h1>heading</h1>
+<p>some <em>italics</em>, some <strong>bold</strong> and </p>
+<ul>
+<li>a list</li>
+</ul>
+",
+      },
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`rich-text conflicts 1`] = `
+{
+  children: [
+    {
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "Desc",
+        original: "at some point everything will end",
+        transformed: "<p>at some point everything will end</p>
+",
+      },
+    },
+    {
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "Desc",
+        original: "at some point everything will 
+end.",
+        transformed: "<p>at some point everything will 
+end.</p>
+",
+      },
+    },
+    {
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "",
+        original: "at some point everything will 
+end.",
+        transformed: "<p>at some point everything will 
+end.</p>
+",
+      },
+    },
+    {
+      children: [
+        {
+          children: [],
+          type: "rich-text",
+          value: {
+            id: "innerText",
+            original: "at some point everything will end",
+            transformed: "<p> at some point everything will end
+  </p>
+",
+          },
+        },
+      ],
+      type: "section",
+      value: "Section",
+    },
+  ],
+  type: "root",
+}
+`;

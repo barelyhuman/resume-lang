@@ -63,14 +63,66 @@ Deno.test("imports", async (t) => {
 end`;
   const fileTwo = `label x:y`;
   const output = parse(
-`
+    `
 @import "./fileOne"
 @import "./fileTwo"
 `,
     {
       rootDir: ".",
       readFile: (path) => {
-        return (path === "./fileOne.resume" ? fileOne : fileTwo)
+        return path === "./fileOne.resume" ? fileOne : fileTwo;
+      },
+    }
+  );
+  await assertSnapshot(t, toJSON(output));
+});
+
+Deno.test("rich-text", async (t) => {
+  const output = parse(
+    `
+text Desc:
+# heading
+
+some *italics*, some **bold** and 
+- a list
+end
+`,
+    {
+      rootDir: ".",
+      readFile: (_path) => {
+        return ``;
+      },
+    }
+  );
+  await assertSnapshot(t, toJSON(output));
+});
+
+Deno.test("rich-text conflicts", async (t) => {
+  const output = parse(
+    `
+text Desc:
+at some point everything will end
+end
+
+text Desc:
+at some point everything will 
+end.
+end
+
+text :
+at some point everything will 
+end.
+end
+
+section Section
+  text innerText: at some point everything will end
+  end
+end
+`,
+    {
+      rootDir: ".",
+      readFile: (_path) => {
+        return ``;
       },
     }
   );

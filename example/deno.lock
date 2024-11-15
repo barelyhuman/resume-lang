@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "npm:@vue/reactivity@^3.5.12": "3.5.12",
+    "npm:marked@15": "15.0.0",
     "npm:parcel@2.13.0": "2.13.0_@parcel+core@2.13.0",
     "npm:parcel@^2.13.0": "2.13.0_@parcel+core@2.13.0"
   },
@@ -1269,6 +1270,9 @@
         "weak-lru-cache"
       ]
     },
+    "marked@15.0.0": {
+      "integrity": "sha512-0mouKmBROJv/WSHJBPZZyYofUgawMChnD5je/g+aOBXsHDjb/IsnTQj7mnhQZu+qPJmRQ0ecX3mLGEUm3BgwYA=="
+    },
     "micromatch@4.0.8": {
       "integrity": "sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==",
       "dependencies": [
@@ -1453,6 +1457,7 @@
   "workspace": {
     "dependencies": [
       "npm:@vue/reactivity@^3.5.12",
+      "npm:marked@15",
       "npm:parcel@^2.13.0"
     ]
   }

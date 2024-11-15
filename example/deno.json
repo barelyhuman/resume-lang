@@ -3,9 +3,10 @@
     "dev": "parcel www/index.html",
     "build": "parcel build www/index.html"
   },
-  "nodeModulesDir":"auto",
+  "nodeModulesDir": "auto",
   "imports": {
     "@vue/reactivity": "npm:@vue/reactivity@^3.5.12",
+    "marked": "npm:marked@^15.0.0",
     "parcel": "npm:parcel@^2.13.0"
   }
 }

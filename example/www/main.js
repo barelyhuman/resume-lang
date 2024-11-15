@@ -1,5 +1,5 @@
 import { computed, effect, reactive } from "@vue/reactivity";
-import { parse } from "../../main.ts";
+import { parse } from "@barelyhuman/resume-lang-parser";
 
 const textElm = document.getElementById("code");
 const previewContainerElm = document.getElementById("preview");

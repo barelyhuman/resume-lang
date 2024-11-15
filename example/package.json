@@ -1,0 +1,16 @@
+{
+  "alias": {
+    "@barelyhuman/resume-lang-parser": "../parser/main.ts"
+  },
+  "dependencies": {
+    "@vue/reactivity": "^3.5.12",
+    "marked": "^15.0.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.13.0"
+  },
+  "scripts": {
+    "dev": "parcel www/index.html",
+    "build": "parcel build www/index.html"
+  }
+}

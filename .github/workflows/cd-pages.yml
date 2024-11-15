@@ -27,18 +27,22 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
       - name: Install dependencies
         run: |
-          deno install
+          deno install  --allow-scripts --node-modules-dir
         working-directory: ${{ env.BUILD_PATH }}
       - name: Build
         run: |
-          deno install --allow-scripts
-          deno task build
-        working-directory: ${{ env.BUILD_PATH }}/example
+          cd example
+          npm i
+          npx parcel build --public-url="${{  steps.pages.outputs.base_path }}" www/index.html
+        working-directory: ${{ env.BUILD_PATH }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -33,15 +33,12 @@ jobs:
       - name: Install dependencies
         run: |
           deno install
-          cd example 
-          deno install --allow-scripts
-          cd ..
         working-directory: ${{ env.BUILD_PATH }}
-      - name: Build with Astro
+      - name: Build
         run: |
-          cd example 
+          deno install --allow-scripts
           deno task build
-        working-directory: ${{ env.BUILD_PATH }}
+        working-directory: ${{ env.BUILD_PATH }}/example
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

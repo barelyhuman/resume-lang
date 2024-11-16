@@ -388,14 +388,6 @@ function nestedStringLiteralTransform(code: string) {
   return trimmedCode.slice(1, -1)
 }
 
-const _defaultRootDir = "."
-const _defaultReadFile = (_s: string) => ``
-
-const defaultOptions: ParserOptions = {
-  rootDir: _defaultRootDir,
-  readFile: _defaultReadFile,
-}
-
 /**
  * resume-lang parser responsible for converting the DSL into an easy block style
  * AST to traverse
@@ -405,10 +397,7 @@ const defaultOptions: ParserOptions = {
  */
 export function parse(
   code: string,
-  {
-    rootDir = _defaultRootDir,
-    readFile = _defaultReadFile,
-  }: Maybe<Partial<ParserOptions>> = defaultOptions,
+  { readFile = () => ``, rootDir = "." }: Partial<ParserOptions>,
 ): AST {
   const ast = toAst(tokenizer(code), { rootDir, readFile })
   return ast

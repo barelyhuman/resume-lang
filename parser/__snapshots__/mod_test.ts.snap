@@ -1,0 +1,316 @@
+export const snapshot = {};
+
+snapshot[`parse isolated labels 1`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [],
+      type: "label",
+      value: {
+        id: "",
+        value: {
+          type: "text",
+          value: "Siddharth Gelera",
+        },
+      },
+    },
+    {
+      __type: "NODE",
+      children: [],
+      type: "label",
+      value: {
+        id: "E-Mail",
+        value: {
+          __type: "NODE",
+          children: [],
+          type: "url",
+          value: {
+            alias: "ahoy@barelyhuman.dev",
+            link: "mailto:ahoy@barelyhuman.dev",
+          },
+        },
+      },
+    },
+    {
+      __type: "NODE",
+      children: [],
+      type: "label",
+      value: {
+        id: "Website",
+        value: {
+          __type: "NODE",
+          children: [],
+          type: "url",
+          value: {
+            alias: "https://reaper.is",
+            link: "https://reaper.is",
+          },
+        },
+      },
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`parse basic section 1`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [
+        {
+          __type: "NODE",
+          children: [],
+          type: "label",
+          value: {
+            id: "",
+            value: {
+              type: "text",
+              value: "Siddharth Gelera",
+            },
+          },
+        },
+        {
+          __type: "NODE",
+          children: [],
+          type: "label",
+          value: {
+            id: "E-Mail",
+            value: {
+              __type: "NODE",
+              children: [],
+              type: "url",
+              value: {
+                alias: "ahoy@barelyhuman.dev",
+                link: "mailto:ahoy@barelyhuman.dev",
+              },
+            },
+          },
+        },
+        {
+          __type: "NODE",
+          children: [],
+          type: "label",
+          value: {
+            id: "Website",
+            value: {
+              __type: "NODE",
+              children: [],
+              type: "url",
+              value: {
+                alias: "https://reaper.is",
+                link: "https://reaper.is",
+              },
+            },
+          },
+        },
+      ],
+      type: "section",
+      value: "Basic",
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`parse nested sections 1`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [
+        {
+          __type: "NODE",
+          children: [
+            {
+              __type: "NODE",
+              children: [],
+              type: "label",
+              value: {
+                id: "Grade",
+                value: {
+                  type: "text",
+                  value: "1",
+                },
+              },
+            },
+            {
+              __type: "NODE",
+              children: [],
+              type: "label",
+              value: {
+                id: "BatchOf",
+                value: {
+                  type: "text",
+                  value: "2013",
+                },
+              },
+            },
+          ],
+          type: "section",
+          value: "College",
+        },
+      ],
+      type: "section",
+      value: "Education",
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`imports 1`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [
+        {
+          __type: "NODE",
+          children: [
+            {
+              __type: "NODE",
+              children: [],
+              type: "label",
+              value: {
+                id: "Grade",
+                value: {
+                  type: "text",
+                  value: "1",
+                },
+              },
+            },
+            {
+              __type: "NODE",
+              children: [],
+              type: "label",
+              value: {
+                id: "BatchOf",
+                value: {
+                  type: "text",
+                  value: "2013",
+                },
+              },
+            },
+          ],
+          type: "section",
+          value: "College",
+        },
+      ],
+      type: "section",
+      value: "Education",
+    },
+    {
+      __type: "NODE",
+      children: [],
+      type: "label",
+      value: {
+        id: "x",
+        value: {
+          type: "text",
+          value: "y",
+        },
+      },
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`rich-text 1`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "Desc",
+        original: "# heading
+
+some *italics*, some **bold** and 
+- a list",
+        transformed: "<h1>heading</h1>
+<p>some <em>italics</em>, some <strong>bold</strong> and </p>
+<ul>
+<li>a list</li>
+</ul>
+",
+      },
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`rich-text conflicts 1`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "Desc",
+        original: "at some point everything will end",
+        transformed: "<p>at some point everything will end</p>
+",
+      },
+    },
+    {
+      __type: "NODE",
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "Desc",
+        original: "at some point everything will 
+end.",
+        transformed: "<p>at some point everything will 
+end.</p>
+",
+      },
+    },
+    {
+      __type: "NODE",
+      children: [],
+      type: "rich-text",
+      value: {
+        id: "",
+        original: "at some point everything will 
+end.",
+        transformed: "<p>at some point everything will 
+end.</p>
+",
+      },
+    },
+    {
+      __type: "NODE",
+      children: [
+        {
+          __type: "NODE",
+          children: [],
+          type: "rich-text",
+          value: {
+            id: "innerText",
+            original: "at some point everything will end",
+            transformed: "<p> at some point everything will end
+  </p>
+",
+          },
+        },
+      ],
+      type: "section",
+      value: "Section",
+    },
+  ],
+  type: "root",
+}
+`;

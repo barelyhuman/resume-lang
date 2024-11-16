@@ -1,5 +1,5 @@
 {
-  "name": "@barelyhuman/resume-lang-parser",
+  "name": "@barelyhuman/resume-lang",
   "version": "0.0.0",
   "exports": "./mod.ts",
   "license": "MIT",

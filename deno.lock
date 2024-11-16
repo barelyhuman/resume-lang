@@ -1,8 +1,10 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@barelyhuman/mini@*": "0.1.0",
     "jsr:@std/assert@1": "1.0.8",
     "jsr:@std/assert@^1.0.8": "1.0.8",
+    "jsr:@std/cli@^1.0.6": "1.0.6",
     "jsr:@std/data-structures@^1.0.4": "1.0.4",
     "jsr:@std/fs@^1.0.5": "1.0.5",
     "jsr:@std/internal@^1.0.5": "1.0.5",
@@ -11,14 +13,21 @@
     "jsr:@std/testing@1": "1.0.5",
     "npm:@vue/reactivity@^3.5.12": "3.5.12",
     "npm:marked@15": "15.0.0",
-    "npm:parcel@^2.13.0": "2.13.0_@parcel+core@2.13.0"
+    "npm:parcel@^2.13.0": "2.13.0_@parcel+core@2.13.0",
+    "npm:semver@*": "7.6.3"
   },
   "jsr": {
+    "@barelyhuman/mini@0.1.0": {
+      "integrity": "982335654e86185a37661b25c493bc767cedcba78e896e1224779261725ccfed"
+    },
     "@std/assert@1.0.8": {
       "integrity": "ebe0bd7eb488ee39686f77003992f389a06c3da1bbd8022184804852b2fa641b",
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/cli@1.0.6": {
+      "integrity": "d22d8b38c66c666d7ad1f2a66c5b122da1704f985d3c47f01129f05abb6c5d3d"
     },
     "@std/data-structures@1.0.4": {
       "integrity": "fa0e20c11eb9ba673417450915c750a0001405a784e2a4e0c3725031681684a0"
@@ -1472,6 +1481,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@1",
+      "jsr:@std/cli@^1.0.6",
       "jsr:@std/testing@1"
     ],
     "members": {

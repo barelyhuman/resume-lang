@@ -36,6 +36,19 @@ end`,
     },
   )
   await assertSnapshot(t, toJSON(output))
+
+  const output2 = parse(
+    `section "Basic"
+    label :"Siddharth Gelera"
+    label E-Mail: url ahoy@barelyhuman.dev mailto:ahoy@barelyhuman.dev
+    label Website: url https://reaper.is
+end`,
+    {
+      rootDir: ".",
+      readFile: (_path) => ``,
+    },
+  )
+  await assertSnapshot(t, toJSON(output2))
 })
 
 Deno.test("parse nested sections", async (t) => {
@@ -71,6 +84,23 @@ end`
       rootDir: ".",
       readFile: (path) => {
         return path === "./fileOne.resume" ? fileOne : fileTwo
+      },
+    },
+  )
+  await assertSnapshot(t, toJSON(output))
+})
+
+Deno.test("group", async (t) => {
+  const output = parse(
+    `
+group 
+    label name: "from group"
+end
+`,
+    {
+      rootDir: ".",
+      readFile: (_path) => {
+        return ``
       },
     },
   )

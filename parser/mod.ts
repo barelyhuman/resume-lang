@@ -81,7 +81,16 @@ const DEFAULT_TRANSFORMS = [
   urlTransfrom,
 ]
 
-const KEYWORDS = ["section", "text", "end", "label", "url", "date", "@import"]
+const KEYWORDS = [
+  "section",
+  "group",
+  "text",
+  "end",
+  "label",
+  "url",
+  "date",
+  "@import",
+]
 
 function tokenizer(code: string) {
   const tokens = code.split("")
@@ -136,6 +145,17 @@ function toAst(tokens: string[], parseOptions: ParserOptions) {
       const literal = collector.concat(traverse.value()).join("")
       if (KEYWORDS.includes(literal)) {
         switch (literal) {
+          case "group": {
+            const nodeDef: Node = createNode(
+              "group",
+              undefined,
+              astPointer,
+            )
+            ;(astPointer.children ||= []).push(nodeDef)
+            collector.length = 0
+            astPointer = nodeDef
+            break
+          }
           case "section": {
             let sectionId = ""
             for (;;) {
@@ -146,7 +166,7 @@ function toAst(tokens: string[], parseOptions: ParserOptions) {
             }
             const nodeDef: Node = createNode(
               "section",
-              sectionId.trim(),
+              runTransformers(sectionId.trim()),
               astPointer,
             )
             ;(astPointer.children ||= []).push(nodeDef)

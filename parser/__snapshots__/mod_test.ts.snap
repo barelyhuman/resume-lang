@@ -117,6 +117,68 @@ snapshot[`parse basic section 1`] = `
 }
 `;
 
+snapshot[`parse basic section 2`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [
+        {
+          __type: "NODE",
+          children: [],
+          type: "label",
+          value: {
+            id: "",
+            value: {
+              type: "text",
+              value: "Siddharth Gelera",
+            },
+          },
+        },
+        {
+          __type: "NODE",
+          children: [],
+          type: "label",
+          value: {
+            id: "E-Mail",
+            value: {
+              __type: "NODE",
+              children: [],
+              type: "url",
+              value: {
+                alias: "ahoy@barelyhuman.dev",
+                link: "mailto:ahoy@barelyhuman.dev",
+              },
+            },
+          },
+        },
+        {
+          __type: "NODE",
+          children: [],
+          type: "label",
+          value: {
+            id: "Website",
+            value: {
+              __type: "NODE",
+              children: [],
+              type: "url",
+              value: {
+                alias: "https://reaper.is",
+                link: "https://reaper.is",
+              },
+            },
+          },
+        },
+      ],
+      type: "section",
+      value: "Basic",
+    },
+  ],
+  type: "root",
+}
+`;
+
 snapshot[`parse nested sections 1`] = `
 {
   __type: "ROOT_NODE",
@@ -217,6 +279,33 @@ snapshot[`imports 1`] = `
           value: "y",
         },
       },
+    },
+  ],
+  type: "root",
+}
+`;
+
+snapshot[`group 1`] = `
+{
+  __type: "ROOT_NODE",
+  children: [
+    {
+      __type: "NODE",
+      children: [
+        {
+          __type: "NODE",
+          children: [],
+          type: "label",
+          value: {
+            id: "name",
+            value: {
+              type: "text",
+              value: "from group",
+            },
+          },
+        },
+      ],
+      type: "group",
     },
   ],
   type: "root",

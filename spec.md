@@ -5,6 +5,7 @@
 ### Scope Based
 
 - `section <name> <body> \n end` - Grouper and can be nested infinitely
+- `group <body> \n end` - nameless grouper and can be nested infinitely
 - `text` - Rich text
   - `text <textId>:<value> \n end`
   - `text :<value> \n end`

@@ -31,7 +31,7 @@ await writeVersion(nextVersion)
 await createVersionTag(nextVersion)
 
 async function readDenoJSON() {
-    const currentData = await Deno.readTextFile("./deno.json", {})
+    const currentData = await Deno.readTextFile("./parser/deno.json", {})
     const denoJSON = JSON.parse(currentData)
     return denoJSON
 }
@@ -44,7 +44,10 @@ async function readVersion() {
 async function writeVersion(version: string) {
     const denoJSON = await readDenoJSON()
     denoJSON.version = version
-    await Deno.writeTextFile("./deno.json", JSON.stringify(denoJSON, null, 2))
+    await Deno.writeTextFile(
+        "./parser/deno.json",
+        JSON.stringify(denoJSON, null, 2),
+    )
 }
 
 async function createVersionTag(version: string) {

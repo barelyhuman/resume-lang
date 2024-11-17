@@ -1,6 +1,6 @@
 {
   "alias": {
-    "@barelyhuman/resume-lang-parser": "../parser/main.ts"
+    "@barelyhuman/resume-lang-parser": "../parser/mod.ts"
   },
   "dependencies": {
     "@vue/reactivity": "^3.5.12",
